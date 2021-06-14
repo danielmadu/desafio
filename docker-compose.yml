@@ -1,0 +1,68 @@
+version: "3"
+
+# Named volumes
+volumes:
+  # MySQL Data
+  desafio-mysql-data:
+    driver: local
+  # Redis Data
+  desafio-redis-data:
+    driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: mysql:latest
+    container_name: desafio-mysql
+    volumes:
+      - desafio-mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=desafio
+  # Redis
+  cache:
+    image: redis:alpine
+    container_name: desafio-redis
+    command: --appendonly yes
+    volumes:
+      - desafio-redis-data:/data
+    ports:
+      - 6379:6379
+  # PHP (with Nginx)
+  app:
+    image: ambientum/php:7.4-nginx
+    container_name: desafio-app
+    environment:
+      PHP_MEMORY_LIMIT: 1G
+    volumes:
+      - .:/var/www/app
+    ports:
+      - 8000:8080
+    links:
+      - mysql
+      - cache
+      - mailcatcher
+
+  # Mail
+  mailcatcher:
+    image: schickling/mailcatcher
+    container_name: desafio-mail
+    ports:
+      - 1025:1025
+      - 1080:1080
+
+  # PHP (with SQL Server)
+  cli:
+    image: ambientum/php:8.0
+    container_name: desafio-cli
+    environment:
+      PHP_MEMORY_LIMIT: 1G
+    volumes:
+      - .:/var/www/app
+    command: tail -f /dev/null
+    links:
+      - mysql
+      - cache
+      - mailcatcher
