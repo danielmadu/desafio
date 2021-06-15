@@ -16,6 +16,8 @@ class TransactionsController extends Controller
 {
     public function list()
     {
+        $user = Auth::user();
+        dd($user);
         $sended = Auth::user()->sended;
         $received = Auth::user()->received;
         return view('transactions.list', [
@@ -72,8 +74,8 @@ class TransactionsController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $request->validate([
-            'payer' => ['exists:users,email|email', Rule::requiredIf($request->isJson())],
-            'payee' => 'exists:users,email|email|required',
+            'payer' => ['exists:users,email', 'email', Rule::requiredIf($request->isJson())],
+            'payee' => ['exists:users,email','email', 'required'],
             'value' => 'required|max:'. $user->wallet->total_amount,
         ]);
 
@@ -91,7 +93,7 @@ class TransactionsController extends Controller
         TransactionCreated::dispatch($transaction);
 
         if ($request->isJson()) {
-            return response()->status(200)->json([
+            return response()->json([
                 'message' => 'Transaction successfully created',
                 'data'    => [
                     'transaction' => $transaction,

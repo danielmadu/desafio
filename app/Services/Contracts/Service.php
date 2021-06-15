@@ -24,8 +24,10 @@ trait Service
 
     public function getMessage()
     {
-        if(isset(($this->getContent())->message)) {
-            return ($this->getContent())->message;
+        $content = $this->getContent();
+
+        if(isset($content->message)) {
+            return $content->message;
         }
 
         return null;

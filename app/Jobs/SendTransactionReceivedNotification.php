@@ -40,7 +40,7 @@ class SendTransactionReceivedNotification implements ShouldQueue
         if($this->triesCount < 4){
             $client = new Client();
             $notificationService = new Notification($client);
-            if(!$notificationService->sendNotification($this->transaction->payee->email)) {
+            if(!$notificationService->sendNotification($this->transaction->to->email)) {
                 SendTransactionReceivedNotification::dispatch($this->transaction, $this->triesCount++);
             }
         }
