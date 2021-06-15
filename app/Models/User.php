@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Wallet::class);
     }
+
+    public function sended()
+    {
+        return $this->hasMany(Transaction::class, 'payer', 'id');
+    }
+
+    public function received()
+    {
+        return $this->hasMany(Transaction::class, 'payee', 'id');
+    }
 }

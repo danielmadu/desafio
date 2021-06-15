@@ -13,8 +13,11 @@ Route::prefix('dashboard')
     ->middleware(['auth'])
     ->group(function () {
         Route::get('/', [DashboardController::class, 'show'])->name('dashboard');
-        Route::get('/transaction/create', [TransactionsController::class, 'create'])->name('transaction.create');
-        Route::post('/transaction/save', [TransactionsController::class, 'save'])->name('transaction.save');
+        Route::get('/transactions', [TransactionsController::class, 'list'])->name('transactions.list');
+        Route::get('/transactions/create', [TransactionsController::class, 'create'])->name('transactions.create');
+        Route::post('/transactions/save', [TransactionsController::class, 'save'])->name('transactions.save');
+        Route::get('/transactions/sended', [TransactionsController::class, 'create'])->name('transactions.sended');
+        Route::get('/transactions/received', [TransactionsController::class, 'received'])->name('transactions.received');
     }
 );
 

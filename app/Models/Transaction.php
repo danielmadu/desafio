@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
- * @property User $payer
- * @property User $payee
+ * @property User $from
+ * @property User $to
+ * @property int $payer
+ * @property int $payee
  * @property float $value
  */
 class Transaction extends Model
@@ -20,4 +22,14 @@ class Transaction extends Model
         'payee',
         'value',
     ];
+
+    public function from()
+    {
+        return $this->belongsTo(User::class, 'payer');
+    }
+
+    public function to()
+    {
+        return $this->belongsTo(User::class, 'payee');
+    }
 }
